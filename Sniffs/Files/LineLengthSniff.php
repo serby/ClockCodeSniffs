@@ -41,7 +41,7 @@ class Clock_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLength
      *
      * @var int
      */
-    protected $lineLimit = 100;
+    protected $lineLimit = 120;
 
     /**
      * The limit that the length of a line must not exceed.
@@ -50,7 +50,7 @@ class Clock_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLength
      *
      * @var int
      */
-    protected $absoluteLineLimit = 140;
+    protected $absoluteLineLimit = 150;
 
 }//end class
 

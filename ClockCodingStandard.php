@@ -44,16 +44,11 @@ class PHP_CodeSniffer_Standards_Clock_ClockCodingStandard extends PHP_CodeSniffe
     public function getIncludedSniffs()
     {
         return array(
-                'Generic/Sniffs/Functions/OpeningFunctionBraceBsdAllmanSniff.php',
+                'Generic/Sniffs/Functions/OpeningFunctionBraceKernighanRitchieSniff.php',
                 'Generic/Sniffs/PHP/DisallowShortOpenTagSniff.php',
-                'Generic/Sniffs/WhiteSpace/DisallowTabIndentSniff.php',
-                'PEAR/Sniffs/Classes/ClassDeclarationSniff.php',
                 'PEAR/Sniffs/ControlStructures/ControlSignatureSniff.php',
-                'PEAR/Sniffs/Files/LineEndingsSniff.php',
-                'PEAR/Sniffs/Functions/FunctionCallArgumentSpacingSniff.php',
-                'PEAR/Sniffs/Functions/FunctionCallSignatureSniff.php',
+                
                 'PEAR/Sniffs/Functions/ValidDefaultValueSniff.php',
-                'PEAR/Sniffs/WhiteSpace/ScopeClosingBraceSniff.php',
                 'Squiz/Sniffs/Functions/GlobalFunctionSniff.php',
         				'Zend/Sniffs/Files/ClosingTagSniff.php'
                );

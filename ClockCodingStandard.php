@@ -46,10 +46,31 @@ class PHP_CodeSniffer_Standards_Clock_ClockCodingStandard extends PHP_CodeSniffe
         return array(
                 'Generic/Sniffs/Functions/OpeningFunctionBraceKernighanRitchieSniff.php',
                 'Generic/Sniffs/PHP/DisallowShortOpenTagSniff.php',
+        				'Generic/Sniffs/CodeAnalysis/EmptyStatementSniff.php',
+        				'Generic/Sniffs/CodeAnalysis/UselessOverridingMethodSniff.php',
+        				'Generic/Sniffs/ControlStructures/InlineControlStructureSniff.php',
+        				'Generic/Sniffs/Metrics/CyclomaticComplexitySniff.php',
+        				'Generic/Sniffs/Metrics/NestingLevelSniff.php',
+        				'Generic/Sniffs/NamingConventions/UpperCaseConstantNameSniff.php',
+        				'Generic/Sniffs/PHP/LowerCaseConstantSniff.php',
+
+        				'PEAR/Sniffs/Files/LineEndingsSniff.php',
                 'PEAR/Sniffs/ControlStructures/ControlSignatureSniff.php',
-                
                 'PEAR/Sniffs/Functions/ValidDefaultValueSniff.php',
+
                 'Squiz/Sniffs/Functions/GlobalFunctionSniff.php',
+        				'Squiz/Sniffs/Arrays/ArrayBracketSpacingSniff.php',
+        				'Squiz/Sniffs/WhiteSpace/OperatorSpacingSniff.php',
+        				'Squiz/Sniffs/PHP/EvalSniff.php',
+				        'Squiz/Sniffs/WhiteSpace/MemberVarSpacingSniff.php',
+				        'Squiz/Sniffs/Strings/EchoedStringsSniff.php',
+				        'Squiz/Sniffs/PHP/ForbiddenFunctionsSniff.php',
+        				'Squiz/Sniffs/ControlStructures/ForEachLoopDeclarationSniff.php',
+        				//'Squiz/Sniffs/ControlStructures/SwitchDeclarationSniff.php',
+                //'Squiz/Sniffs/Functions/FunctionDeclarationArgumentSpacingSniff.php',
+                'Squiz/Sniffs/Operators/ComparisonOperatorUsageSniff.php',
+        				'Squiz/Sniffs/Operators/IncrementDecrementUsageSniff.php',
+        				//'Squiz/Sniffs/WhiteSpace/LanguageConstructSpacingSniff.php',
         				'Zend/Sniffs/Files/ClosingTagSniff.php'
                );
 

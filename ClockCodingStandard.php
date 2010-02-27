@@ -46,7 +46,6 @@ class PHP_CodeSniffer_Standards_Clock_ClockCodingStandard extends PHP_CodeSniffe
         return array(
                 'Generic/Sniffs/Functions/OpeningFunctionBraceKernighanRitchieSniff.php',
                 'Generic/Sniffs/PHP/DisallowShortOpenTagSniff.php',
-        				'Generic/Sniffs/CodeAnalysis/EmptyStatementSniff.php',
         				'Generic/Sniffs/CodeAnalysis/UselessOverridingMethodSniff.php',
         				'Generic/Sniffs/ControlStructures/InlineControlStructureSniff.php',
         				'Generic/Sniffs/Metrics/CyclomaticComplexitySniff.php',
@@ -64,10 +63,7 @@ class PHP_CodeSniffer_Standards_Clock_ClockCodingStandard extends PHP_CodeSniffe
         				'Squiz/Sniffs/PHP/EvalSniff.php',
 				        'Squiz/Sniffs/WhiteSpace/MemberVarSpacingSniff.php',
 				        'Squiz/Sniffs/Strings/EchoedStringsSniff.php',
-				        'Squiz/Sniffs/PHP/ForbiddenFunctionsSniff.php',
-        				'Squiz/Sniffs/ControlStructures/ControlSignatureSniff.php',
         				'Squiz/Sniffs/ControlStructures/ForEachLoopDeclarationSniff.php',
-        				//'PEAR/Sniffs/Commenting/ClassCommentSniff.php',
                 //'Squiz/Sniffs/Functions/FunctionDeclarationArgumentSpacingSniff.php',
                 'Squiz/Sniffs/Operators/ComparisonOperatorUsageSniff.php',
         				'Squiz/Sniffs/Operators/IncrementDecrementUsageSniff.php',

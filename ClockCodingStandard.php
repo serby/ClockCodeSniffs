@@ -65,7 +65,6 @@ class PHP_CodeSniffer_Standards_Clock_ClockCodingStandard extends PHP_CodeSniffe
 				        'Squiz/Sniffs/Strings/EchoedStringsSniff.php',
         				'Squiz/Sniffs/ControlStructures/ForEachLoopDeclarationSniff.php',
                 //'Squiz/Sniffs/Functions/FunctionDeclarationArgumentSpacingSniff.php',
-                'Squiz/Sniffs/Operators/ComparisonOperatorUsageSniff.php',
         				'Squiz/Sniffs/Operators/IncrementDecrementUsageSniff.php',
         				//'Squiz/Sniffs/WhiteSpace/LanguageConstructSpacingSniff.php',
         				'Zend/Sniffs/Files/ClosingTagSniff.php'

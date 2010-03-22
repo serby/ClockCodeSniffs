@@ -13,18 +13,10 @@
  * @version   CVS: $Id: ClassCommentSniff.php,v 1.18 2008/02/06 02:54:57 squiz Exp $
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-include "FileCommentSniff.php";
-
 if (class_exists('PHP_CodeSniffer_CommentParser_ClassCommentParser', true) === false) {
     $error = 'Class PHP_CodeSniffer_CommentParser_ClassCommentParser not found';
     throw new PHP_CodeSniffer_Exception($error);
 }
-
-if (class_exists('Clock_Sniffs_Commenting_FileCommentSniff', true) === false) {
-    $error = 'Class Clock_Sniffs_Commenting_FileCommentSniff not found';
-    throw new PHP_CodeSniffer_Exception($error);
-}
-
 
 /**
  * Parses and verifies the doc comments for classes.
@@ -49,7 +41,7 @@ if (class_exists('Clock_Sniffs_Commenting_FileCommentSniff', true) === false) {
  * @version   Release: 1.1.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Clock_Sniffs_Commenting_ClassCommentSniff extends Clock_Sniffs_Commenting_FileCommentSniff
+class Clock_Sniffs_Commenting_ClassCommentSniff implements PHP_CodeSniffer_Sniff
 {
 
 
@@ -215,6 +207,149 @@ class Clock_Sniffs_Commenting_ClassCommentSniff extends Clock_Sniffs_Commenting_
 
     }//end processVersion()
 
+
+        /**
+     * Processes each required or optional tag.
+     *
+     * @param int $commentStart The position in the stack where the comment started.
+     * @param int $commentEnd   The position in the stack where the comment ended.
+     *
+     * @return void
+     */
+    protected function processTags($commentStart, $commentEnd)
+    {
+        // Required tags in correct order.
+        $tags = array(
+                 'version'    => 'precedes @package',
+                 'package'    => 'follows @version',
+                 'subpackage' => 'follows @package',
+                 'author'     => 'follows @subpackage',
+                 'copyright'  => 'follows @author',
+                 'license'    => 'follows @copyright',
+                );
+
+        $foundTags   = $this->commentParser->getTagOrders();
+        $errorPos    = 0;
+        $orderIndex  = 0;
+        $longestTag  = 0;
+        $indentation = array();
+        foreach ($tags as $tag => $orderText) {
+
+            // Required tag missing.
+            if (in_array($tag, $foundTags) === false) {
+                $error = "Missing @$tag tag in file comment";
+                $this->currentFile->addError($error, $commentEnd);
+                continue;
+            }
+
+            // Get the line number for current tag.
+            $tagName = ucfirst($tag);
+            if ($tagName === 'Author' || $tagName === 'Copyright') {
+                // These tags are different because they return an array.
+                $tagName .= 's';
+            }
+
+            // Work out the line number for this tag.
+            $getMethod  = 'get'.$tagName;
+            $tagElement = $this->commentParser->$getMethod();
+            if (is_null($tagElement) === true || empty($tagElement) === true) {
+                continue;
+            } else if (is_array($tagElement) === true && empty($tagElement) === false) {
+                $tagElement = $tagElement[0];
+            }
+
+            $errorPos = ($commentStart + $tagElement->getLine());
+
+            // Make sure there is no duplicate tag.
+            $foundIndexes = array_keys($foundTags, $tag);
+            if (count($foundIndexes) > 1) {
+                $error = "Only 1 @$tag tag is allowed in file comment";
+                $this->currentFile->addError($error, $errorPos);
+            }
+
+            // Check tag order.
+            if ($foundIndexes[0] > $orderIndex) {
+                $orderIndex = $foundIndexes[0];
+            } else {
+                $error = "The @$tag tag is in the wrong order; the tag $orderText";;
+                $this->currentFile->addError($error, $errorPos);
+            }
+
+            // Store the indentation of each tag.
+            $len = strlen($tag);
+            if ($len > $longestTag) {
+                $longestTag = $len;
+            }
+
+            $indentation[] = array(
+                              'tag'      => $tag,
+                              'errorPos' => $errorPos,
+                              'space'    => $this->getIndentation($tag, $tagElement),
+                             );
+
+
+        }//end foreach
+
+
+    }//end processTags()
+
+
+    /**
+     * Get the indentation information of each tag.
+     *
+     * @param string                                   $tagName    The name of the doc comment element.
+     * @param PHP_CodeSniffer_CommentParser_DocElement $tagElement The doc comment element.
+     *
+     * @return void
+     */
+    protected function getIndentation($tagName, $tagElement)
+    {
+        if ($tagElement instanceof PHP_CodeSniffer_CommentParser_SingleElement) {
+            if ($tagElement->getContent() !== '') {
+                return (strlen($tagName) + substr_count($tagElement->getWhitespaceBeforeContent(), ' '));
+            }
+        } else if ($tagElement instanceof PHP_CodeSniffer_CommentParser_PairElement) {
+            if ($tagElement->getValue() !== '') {
+                return (strlen($tagName) + substr_count($tagElement->getWhitespaceBeforeValue(), ' '));
+            }
+        }
+
+        return 0;
+
+    }//end getIndentation()
+
+    /**
+     * The subpackage name must be camel-cased.
+     *
+     * @param int $errorPos The line number where the error occurs.
+     *
+     * @return void
+     */
+    protected function processSubpackage($errorPos)
+    {
+        $subpackage = $this->commentParser->getSubpackage();
+        if ($subpackage !== null) {
+            $content = $subpackage->getContent();
+            if (empty($content) === true) {
+                $error = 'Content missing for @subpackage tag in file comment';
+                $this->currentFile->addError($error, $errorPos);
+            } else if (PHP_CodeSniffer::isUnderscoreName($content) !== true) {
+                // Subpackage name must be properly camel-cased.
+                $nameBits = explode('_', $content);
+                $firstBit = array_shift($nameBits);
+                $newName  = strtoupper($firstBit{0}).substr($firstBit, 1).'_';
+                foreach ($nameBits as $bit) {
+                    $newName .= strtoupper($bit{0}).substr($bit, 1).'_';
+                }
+
+                $validName = trim($newName, '_');
+                $error     = "Subpackage name \"$content\" is not valid; ";
+                $error    .= "consider \"$validName\" instead";
+                $this->currentFile->addError($error, $errorPos);
+            }
+        }
+
+    }//end processSubpackage()
 
 }//end class
 

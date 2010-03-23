@@ -237,7 +237,7 @@ class Clock_Sniffs_Commenting_ClassCommentSniff implements PHP_CodeSniffer_Sniff
 
             // Required tag missing.
             if (in_array($tag, $foundTags) === false) {
-                $error = "Missing @$tag tag in file comment";
+                $error = "Missing @$tag tag in class comment";
                 $this->currentFile->addError($error, $commentEnd);
                 continue;
             }
@@ -263,7 +263,7 @@ class Clock_Sniffs_Commenting_ClassCommentSniff implements PHP_CodeSniffer_Sniff
             // Make sure there is no duplicate tag.
             $foundIndexes = array_keys($foundTags, $tag);
             if (count($foundIndexes) > 1) {
-                $error = "Only 1 @$tag tag is allowed in file comment";
+                $error = "Only 1 @$tag tag is allowed in class comment";
                 $this->currentFile->addError($error, $errorPos);
             }
 

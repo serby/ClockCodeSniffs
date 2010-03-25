@@ -137,6 +137,7 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
             return;
         }
 
+
         // If there is any code between the function keyword and the doc block
         // then the doc block is not for us.
         $ignore    = PHP_CodeSniffer_Tokens::$scopeModifiers;
@@ -144,10 +145,16 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         $ignore[]  = T_WHITESPACE;
         $ignore[]  = T_ABSTRACT;
         $ignore[]  = T_FINAL;
+
         $prevToken = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
-        if ($prevToken !== $commentEnd) {
+        $this->_methodName = $phpcsFile->getDeclarationName($stackPtr);
+        $isSpecialMethod = ($this->_methodName === '__construct' || $this->_methodName === '__destruct');
+
+        if (!$isSpecialMethod) {
+	        if ($prevToken !== $commentEnd) {
             $phpcsFile->addError('Missing function doc comment', $stackPtr);
             return;
+	        }
         }
 
         $this->_functionToken = $stackPtr;
@@ -172,7 +179,6 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         }
 
         $comment           = $phpcsFile->getTokensAsString($commentStart, ($commentEnd - $commentStart + 1));
-        $this->_methodName = $phpcsFile->getDeclarationName($stackPtr);
 
         try {
             $this->commentParser = new PHP_CodeSniffer_CommentParser_FunctionCommentParser($comment, $phpcsFile);
@@ -184,7 +190,8 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         }
 
         $comment = $this->commentParser->getComment();
-        if (is_null($comment) === true) {
+
+        if (!$isSpecialMethod && is_null($comment) === true) {
             $error = 'Function doc comment is empty';
             $phpcsFile->addError($error, $commentStart);
             return;
@@ -198,9 +205,9 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         $short        = $comment->getShortComment();
         $newlineCount = 0;
         $newlineSpan  = strspn($short, $phpcsFile->eolChar);
-        if ($short !== '' && $newlineSpan > 0) {
+        if ((!$isSpecialMethod) && ($short !== '' && $newlineSpan > 0)) {
             $line  = ($newlineSpan > 1) ? 'newlines' : 'newline';
-            $error = "Extra $line found before function comment short description";
+            $error = $this->_methodName . "Extsra $line found before function comment short description";
             $phpcsFile->addError($error, ($commentStart + 1));
         }
 
@@ -208,7 +215,7 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
         // Exactly one blank line between short and long description.
         $long = $comment->getLongComment();
-        if (empty($long) === false) {
+        if (!$isSpecialMethod && empty($long) === false) {
             $between        = $comment->getWhiteSpaceBetween();
             $newlineBetween = substr_count($between, $phpcsFile->eolChar);
             if ($newlineBetween !== 2) {
@@ -221,7 +228,7 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
         // Exactly one blank line before tags.
         $params = $this->commentParser->getTagOrders();
-        if (count($params) > 1) {
+        if (!$isSpecialMethod && count($params) > 1) {
             $newlineSpan = $comment->getNewlineAfter();
             if ($newlineSpan !== 2) {
                 $error = 'There must be exactly one blank line before the tags in function comment';
@@ -405,10 +412,10 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
                     $this->currentFile->addError($error, $errorPos);
                 }
 
-                if ($paramComment === '') {
-                    $error = 'Missing comment for param "'.$paramName.'" at position '.$pos;
-                    $this->currentFile->addError($error, $errorPos);
-                }
+//                if ($paramComment === '') {
+//                    $error = 'Missing comment for param "'.$paramName.'" at position '.$pos;
+//                    $this->currentFile->addError($error, $errorPos);
+//                }
 
                 $previousParam = $param;
 

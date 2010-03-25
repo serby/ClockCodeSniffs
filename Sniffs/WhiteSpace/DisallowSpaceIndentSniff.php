@@ -28,7 +28,7 @@
  * @version   Release: 1.1.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class Clock_Sniffs_WhiteSpace_DisallowTabIndentSniff implements PHP_CodeSniffer_Sniff
+class Clock_Sniffs_WhiteSpace_DisallowSpaceIndentSniff implements PHP_CodeSniffer_Sniff
 {
 
     /**

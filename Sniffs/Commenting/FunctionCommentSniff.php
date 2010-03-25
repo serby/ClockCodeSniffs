@@ -201,6 +201,10 @@ class Clock_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         $this->processReturn($commentStart, $commentEnd);
         $this->processThrows($commentStart);
 
+        if ($isSpecialMethod) {
+					return ;
+        }
+        
         // No extra newline before short description.
         $short        = $comment->getShortComment();
         $newlineCount = 0;
